@@ -1,0 +1,27 @@
+on:
+  push:
+    paths:
+      - workflow-templates/extension-test.yml
+
+jobs:
+  copy:
+    strategy:
+      matrix:
+        repository:
+          - AchievementBadges
+          - Sanctions
+        branch:
+          - master
+          - REL1_35
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copycat
+        uses: andstor/copycat-action@v3
+        with:
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          src_path: /workflow-templates/extension-test.yml
+          dst_path: /.github/workflows/test.yml
+          dst_owner: femiwiki
+          dst_repo_name: ${{ matrix.repository }}
+          dst_branch: ${{ matrix.branch }}
