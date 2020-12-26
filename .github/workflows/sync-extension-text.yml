@@ -16,12 +16,20 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
+      - run: |
+          echo "GITHUB_REPOSITORY=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
+          echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
       - name: Copycat
         uses: andstor/copycat-action@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          src_path: /workflow-templates/extension-test.yml
-          dst_path: /.github/workflows/test.yml
+          src_path: workflow-templates/extension-test.yml
+          dst_path: .github/workflows/test.yml
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
           dst_branch: ${{ matrix.branch }}
+          commit_message: |
+            Update ".github/workflows/test.yml"
+
+            from ${{ env.GITHUB_REPOSITORY }} (https://github.com/${{ env.GITHUB_REPOSITORY }}/commit/${{ env.GITHUB_SHA }})
+
