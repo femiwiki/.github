@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "test": "yarn -s run lint",
+    "lint": "yarn -s run lint:prettier",
+    "lint:prettier": "prettier '**/*.{json,md}' --check",
+    "fix": "prettier '**/*.{json,md}' --write"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1"
+  }
+}

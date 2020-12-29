@@ -32,4 +32,3 @@ jobs:
             Update ".github/workflows/test.yml"
 
             from ${{ env.GITHUB_REPOSITORY }} (https://github.com/${{ env.GITHUB_REPOSITORY }}/commit/${{ env.GITHUB_SHA }})
-
