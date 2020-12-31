@@ -9,7 +9,10 @@ jobs:
       matrix:
         repository:
           - AchievementBadges
+          - CategoryIntersectionSearch
+          - FacetedCategory
           - Sanctions
+          - UnifiedExtensionForFemiwiki
         branch:
           - master
           - REL1_35
