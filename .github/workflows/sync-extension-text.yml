@@ -2,6 +2,7 @@ on:
   push:
     paths:
       - workflow-templates/extension-test.yml
+      - .github/workflows/sync-extension-text.yml
 
 jobs:
   copy:
