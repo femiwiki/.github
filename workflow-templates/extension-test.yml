@@ -138,7 +138,8 @@ jobs:
           sudo cp -r "${GITHUB_WORKSPACE}" src/extensions/
           mkdir -p cache cover
           chmod 777 src cache cover
-          sudo chown -R nobody:nogroup src
+          # chown cache/ https://github.com/femiwiki/.github/issues/3
+          sudo chown -R nobody:nogroup src cache
           sudo chown $(id -u):$(id -g) src cache
           # Composer install
           if [ "${{ matrix.stage }}" == 'phan' ] || [ "${{ matrix.stage }}" == 'coverage' ]; then
