@@ -105,13 +105,13 @@ jobs:
           docker load -i /home/runner/docker-images/"${DOCKER_IMAGE}" || \
             docker pull "${DOCKER_REGISTRY}/${DOCKER_ORG}/${DOCKER_IMAGE}:${DOCKER_LATEST_TAG}"
       - name: Cache quibble docker image
-        if: ${{ matrix.stage == 'coverage' }}
+        if: ${{ matrix.stage == 'coverage' || matrix.stage == 'phan' }}
         uses: actions/cache@v2
         with:
           path: /home/runner/docker-images/${{ env.QUIBBLE_DOCKER_IMAGE }}
           key: ${{ env.QUIBBLE_DOCKER_IMAGE }}:${{ env.QUIBBLE_DOCKER_LATEST_TAG }}
       - name: Load or pull quibble docker image
-        if: ${{ matrix.stage == 'coverage' }}
+        if: ${{ matrix.stage == 'coverage' || matrix.stage == 'phan' }}
         run: |
           docker load -i /home/runner/docker-images/"${QUIBBLE_DOCKER_IMAGE}" || \
             docker pull "${DOCKER_REGISTRY}/${DOCKER_ORG}/${QUIBBLE_DOCKER_IMAGE}:${DOCKER_LATEST_TAG}"
