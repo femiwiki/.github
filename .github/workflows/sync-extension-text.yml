@@ -10,7 +10,6 @@ jobs:
       matrix:
         repository:
           - AchievementBadges
-          - CategoryIntersectionSearch
           - FacetedCategory
           - Sanctions
           - UnifiedExtensionForFemiwiki
