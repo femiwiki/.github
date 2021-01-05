@@ -14,7 +14,7 @@ jobs:
           - Sanctions
           - UnifiedExtensionForFemiwiki
         branch:
-          - master
+          - main
           - REL1_35
 
     runs-on: ubuntu-latest
