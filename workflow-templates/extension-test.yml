@@ -9,12 +9,7 @@ name: Quibble and Phan
 on:
   push:
     branches:
-      - main
-      - main-*
-      - master
-      - master-*
-      - REL*_*
-      - REL*_*-*
+      - '*'
     tags-ignore:
       - '*.*'
   pull_request:
