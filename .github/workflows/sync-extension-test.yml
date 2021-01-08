@@ -27,6 +27,7 @@ jobs:
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           src_path: workflow-templates/extension-test.yml
+          src_branch: main
           dst_path: .github/workflows/test.yml
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
