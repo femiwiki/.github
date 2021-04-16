@@ -6,11 +6,6 @@ updates:
       interval: "daily"
 
   - package-ecosystem: "github-actions"
-    directory: "/.github/workflow-templates/"
-    schedule:
-      interval: "daily"
-
-  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
