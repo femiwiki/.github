@@ -10,6 +10,7 @@ jobs:
       matrix:
         repository:
           - AchievementBadges
+          - DiscordNotifications
           - FacetedCategory
           - Sanctions
           - UnifiedExtensionForFemiwiki
@@ -26,7 +27,7 @@ jobs:
         uses: andstor/copycat-action@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          src_path: workflow-templates/extension-test.yml
+          src_path: .github/workflows/extension-test.yml
           src_branch: main
           dst_path: .github/workflows/test.yml
           dst_owner: femiwiki
