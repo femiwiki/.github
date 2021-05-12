@@ -24,7 +24,7 @@ jobs:
           echo "GITHUB_REPOSITORY=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
           echo "GITHUB_SHA=${GITHUB_SHA}" >> $GITHUB_ENV
       - name: Copycat
-        uses: andstor/copycat-action@v3
+        uses: andstor/copycat-action@v3.2.4
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           src_path: .github/workflows/extension-test.yml
