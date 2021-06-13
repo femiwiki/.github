@@ -14,6 +14,9 @@ dependencies['ext'] = open('dependencies').read().splitlines()
 # Resolve
 resolvedDependencies = []
 for d in get_dependencies('ext', dependencies):
+  # Skip parsoid which is a virtual extension
+  if d == 'parsoid':
+    continue
   d = 'mediawiki/extensions/' + d
   d = d.replace('/extensions/skins/', '/skins/')
   resolvedDependencies.append(d)
