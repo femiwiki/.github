@@ -1,8 +1,8 @@
 on:
   push:
     paths:
-      - workflow-templates/extension-test.yml
-      - .github/workflows/sync-extension-text.yml
+      - workflow-templates/.github/workflows/extension-test.yml
+      - .github/workflows/sync-extension-test.yml
 
 jobs:
   copy:
