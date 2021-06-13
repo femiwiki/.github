@@ -16,7 +16,7 @@ jobs:
           - UnifiedExtensionForFemiwiki
         branch:
           - main
-          - REL1_35
+          - REL1_36
 
     runs-on: ubuntu-latest
     steps:
@@ -27,7 +27,7 @@ jobs:
         uses: andstor/copycat-action@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          src_path: .github/workflows/extension-test.yml
+          src_path: workflow-templates/.github/workflows/extension-test.yml
           src_branch: main
           dst_path: .github/workflows/test.yml
           dst_owner: femiwiki
