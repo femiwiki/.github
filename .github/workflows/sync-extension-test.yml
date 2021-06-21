@@ -12,6 +12,7 @@ jobs:
           - AchievementBadges
           - DiscordNotifications
           - FacetedCategory
+          - PageViewInfoGA
           - Sanctions
           - UnifiedExtensionForFemiwiki
         branch:
