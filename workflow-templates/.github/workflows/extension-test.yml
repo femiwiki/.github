@@ -129,6 +129,7 @@ jobs:
               git clone --recurse-submodules -b "${MEDIAWIKI_VERSION}" --depth 1 "https://gerrit.wikimedia.org/r/${dep}" src/"$(echo $dep | cut -d'/' -f2,3)"
             done
           fi
+          git -C src/ log -n 1 --format="%H"
 
       - name: Cache dependencies (composer and npm)
         uses: actions/cache@v2
