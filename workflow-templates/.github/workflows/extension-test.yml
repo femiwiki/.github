@@ -33,8 +33,8 @@ jobs:
           - phpunit-standalone
           - npm-test
           - composer-test
+          - selenium
           # - qunit
-          # - selenium
           # - api-testing
 
     runs-on: ubuntu-latest
