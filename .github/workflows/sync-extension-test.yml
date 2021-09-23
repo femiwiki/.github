@@ -10,7 +10,7 @@ jobs:
       matrix:
         repository:
           - AchievementBadges
-          - DiscordNotifications
+          - DiscordRCFeed
           - FacetedCategory
           - PageViewInfoGA
           - Sanctions
