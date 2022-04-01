@@ -17,7 +17,8 @@ jobs:
           - UnifiedExtensionForFemiwiki
         branch:
           - main
-          - REL1_36
+          - REL1_37
+          - REL1_38
 
     runs-on: ubuntu-latest
     steps:
@@ -33,7 +34,7 @@ jobs:
           dst_path: .github/workflows/test.yml
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
-          dst_branch: ${{ matrix.branch }}
+          dst_branch: update-extension-test-${{ matrix.branch }}
           commit_message: |
             Update ".github/workflows/test.yml"
 
