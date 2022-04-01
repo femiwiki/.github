@@ -13,7 +13,6 @@ on:
 
 jobs:
   create-pr:
-
     runs-on: ubuntu-latest
 
     steps:
