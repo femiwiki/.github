@@ -19,11 +19,11 @@ jobs:
       - uses: actions/checkout@v3
 
       - run: |
-          echo 'CREATE_PR_BASE='$(echo "${{ matrix.branch }}" | rev | cut -d'-' -f1 | rev) >> $GITHUB_ENV
+          echo 'CREATE_PR_BASE='$(echo "${{ github.ref_name }}" | rev | cut -d'-' -f1 | rev) >> $GITHUB_ENV
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           title: Update ".github/workflows/test.yml"
-          branch: ${{ matrix.branch }}
+          branch: ${{ github.ref_name }}
           base: ${{ env.CREATE_PR_BASE }}
