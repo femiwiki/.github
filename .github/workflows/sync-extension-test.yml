@@ -39,6 +39,6 @@ jobs:
           dst_repo_name: ${{ matrix.repository }}
           dst_branch: update-extension-test-${{ matrix.branch }}
           commit_message: |
-            Update ".github/workflows/test.yml"
+            Update extension test workflow
 
             from ${{ env.GITHUB_REPOSITORY }} (https://github.com/${{ env.GITHUB_REPOSITORY }}/commit/${{ env.GITHUB_SHA }})
