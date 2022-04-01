@@ -1,8 +1,11 @@
 on:
   push:
+    branches:
+      - 'main'
     paths:
-      - workflow-templates/.github/workflows/extension-test.yml
       - .github/workflows/sync-extension-test.yml
+      - workflow-templates/.github/workflows/extension-test.yml
+      - workflow-templates/.github/workflows/create-pr-updating-extension-test.yml
 
 jobs:
   copy:
@@ -17,7 +20,8 @@ jobs:
           - UnifiedExtensionForFemiwiki
         branch:
           - main
-          - REL1_36
+          - REL1_37
+          - REL1_38
 
     runs-on: ubuntu-latest
     steps:
@@ -28,12 +32,14 @@ jobs:
         uses: andstor/copycat-action@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
-          src_path: workflow-templates/.github/workflows/extension-test.yml
+          src_path:
+            - workflow-templates/.github/workflows/create-pr-updating-extension-test.yml
+            - workflow-templates/.github/workflows/extension-test.yml
           src_branch: main
           dst_path: .github/workflows/test.yml
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
-          dst_branch: ${{ matrix.branch }}
+          dst_branch: update-extension-test-${{ matrix.branch }}
           commit_message: |
             Update ".github/workflows/test.yml"
 
