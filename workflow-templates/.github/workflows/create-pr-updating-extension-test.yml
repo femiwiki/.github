@@ -21,9 +21,8 @@ jobs:
       - run: |
           echo 'CREATE_PR_BASE='$(echo "${{ github.ref_name }}" | rev | cut -d'-' -f1 | rev) >> $GITHUB_ENV
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+        uses: repo-sync/pull-request@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          title: Update ".github/workflows/test.yml"
-          branch: ${{ github.ref_name }}
-          base: ${{ env.CREATE_PR_BASE }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          title: Update extension test workflow
+          destination_branch: ${{ env.CREATE_PR_BASE }}
