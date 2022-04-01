@@ -1,8 +1,11 @@
 on:
   push:
+    branches:
+      - 'main'
     paths:
-      - workflow-templates/.github/workflows/extension-test.yml
       - .github/workflows/sync-extension-test.yml
+      - workflow-templates/.github/workflows/extension-test.yml
+      - workflow-templates/.github/workflows/create-pr-updating-extension-test.yml
 
 jobs:
   copy:
