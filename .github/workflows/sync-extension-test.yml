@@ -27,7 +27,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: peterjgrainger/action-create-branch@v2
+      - uses: peterjgrainger/action-create-branch@v2.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -46,5 +46,5 @@ jobs:
           dst_branch: update-extension-test-${{ matrix.branch }}
           commit_message: |
             ${{ github.event.head_commit.message }}
-            
+
             from https://github.com/${{ github.event.repository.full_name }}/commit/${{ github.event.head_commit.id }}
