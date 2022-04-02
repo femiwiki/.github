@@ -45,7 +45,7 @@ jobs:
           dst_path: .github/workflows/.
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
-          dst_branch: ${{ matrix.branch }}-${{ matrix.branch }}
+          dst_branch: ${{ matrix.branch }}-update-extension-test
           username: femiwiki-bot
           email: femiwiki-bot@users.noreply.github.com
           commit_message: |
