@@ -46,6 +46,8 @@ jobs:
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
           dst_branch: update-extension-test-${{ matrix.branch }}
+          username: femiwiki-bot
+          email: femiwiki-bot@users.noreply.github.com
           commit_message: |
             ${{ github.event.head_commit.message }}
 
