@@ -46,5 +46,5 @@ jobs:
           dst_branch: update-extension-test-${{ matrix.branch }}
           commit_message: |
             ${{ github.event.head_commit.message }}
-            
+
             from https://github.com/${{ github.event.repository.full_name }}/commit/${{ github.event.head_commit.id }}
