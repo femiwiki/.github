@@ -32,7 +32,7 @@ jobs:
         with:
           repository_owner: ${{ github.repository_owner }}
           repository_name: ${{ matrix.repository }}
-          new_branch_name: update-extension-test-${{ matrix.branch }}
+          new_branch_name: ${{ matrix.branch }}-update-extension-test
           new_branch_ref: origin/${{ matrix.branch }}
           access_token: ${{ secrets.PERSONAL_TOKEN }}
 
@@ -45,7 +45,7 @@ jobs:
           dst_path: .github/workflows/.
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
-          dst_branch: update-extension-test-${{ matrix.branch }}
+          dst_branch: ${{ matrix.branch }}-${{ matrix.branch }}
           username: femiwiki-bot
           email: femiwiki-bot@users.noreply.github.com
           commit_message: |
