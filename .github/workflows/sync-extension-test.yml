@@ -27,12 +27,12 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: peterjgrainger/action-create-branch@v2.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: GuillaumeFalourd/create-other-repo-branch-action@v1
         with:
-          branch: update-extension-test-${{ matrix.branch }}
-          sha: ${{ matrix.branch }}
+          repository_owner: ${{ github.repository_owner }}
+          repository_name: ${{ matrix.repository }}
+          new_branch_name: update-extension-test-${{ matrix.branch }}
+          new_branch_ref: ${{ matrix.branch }}
 
       - name: Copycat
         uses: andstor/copycat-action@v3
