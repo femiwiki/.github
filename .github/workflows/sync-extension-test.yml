@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: GuillaumeFalourd/create-other-repo-branch-action@v1
+        continue-on-error: true
         with:
           repository_owner: ${{ github.repository_owner }}
           repository_name: ${{ matrix.repository }}
@@ -36,7 +37,6 @@ jobs:
           access_token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Copycat
-        if: always()
         uses: andstor/copycat-action@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
