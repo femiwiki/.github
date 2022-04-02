@@ -33,6 +33,7 @@ jobs:
           repository_name: ${{ matrix.repository }}
           new_branch_name: update-extension-test-${{ matrix.branch }}
           new_branch_ref: ${{ matrix.branch }}
+          access_token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Copycat
         uses: andstor/copycat-action@v3
