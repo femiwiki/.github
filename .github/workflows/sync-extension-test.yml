@@ -36,6 +36,7 @@ jobs:
           access_token: ${{ secrets.PERSONAL_TOKEN }}
 
       - name: Copycat
+        if: always()
         uses: andstor/copycat-action@v3
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
