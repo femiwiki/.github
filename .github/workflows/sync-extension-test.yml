@@ -35,4 +35,7 @@ jobs:
           dst_owner: femiwiki
           dst_repo_name: ${{ matrix.repository }}
           dst_branch: update-extension-test-${{ matrix.branch }}
-          commit_message: ${{ github.event.head_commit.message }}
+          commit_message: |
+            ${{ github.event.head_commit.message }}
+            
+            from https://github.com/${{ github.event.repository }}/commit/${{ github.event.head_commit.id }}
