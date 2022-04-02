@@ -6,8 +6,7 @@ on:
       - 'main'
     paths:
       - .github/workflows/sync-extension-test.yml
-      - workflow-templates/.github/workflows/extension-test.yml
-      - workflow-templates/.github/workflows/create-pr-updating-extension-test.yml
+      - workflow-templates/.github/workflows/*.yml
 
 jobs:
   copy:
