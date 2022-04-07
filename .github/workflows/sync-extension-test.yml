@@ -27,7 +27,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: lens0021/create-other-repo-branch-action@main
+      - uses: GuillaumeFalourd/create-other-repo-branch-action@v1.1
         continue-on-error: true # Errors when the name of the branch is already used
         with:
           repository_owner: ${{ github.repository_owner }}
