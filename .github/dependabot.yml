@@ -8,7 +8,7 @@ updates:
       - 'femiwiki/reviewer'
 
   - package-ecosystem: 'github-actions'
-    directory: '/workflow-templates'
+    directory: '/workflow-templates/.github/workflows'
     schedule:
       interval: 'daily'
     reviewers:
