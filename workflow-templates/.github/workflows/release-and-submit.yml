@@ -70,4 +70,4 @@ jobs:
                 \"extension\": \"$EXTENSION\",
                 \"version\": \"${{ steps.tag_name.outputs.tag_name }}\"
               }
-            }'
+            }"
