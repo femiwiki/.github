@@ -3,14 +3,14 @@ updates:
   - package-ecosystem: 'npm'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: monthly
     reviewers:
       - 'femiwiki/reviewer'
 
   - package-ecosystem: 'github-actions'
     directory: '/workflow-templates/.github/workflows'
     schedule:
-      interval: 'daily'
+      interval: monthly
     reviewers:
       - 'femiwiki/reviewer'
     ignore:
@@ -22,7 +22,7 @@ updates:
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
-      interval: 'daily'
+      interval: monthly
     reviewers:
       - 'femiwiki/reviewer'
     ignore:
