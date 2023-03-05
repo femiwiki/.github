@@ -22,7 +22,6 @@ jobs:
           - UnifiedExtensionForFemiwiki
         branch:
           - main
-          - REL1_38
           - REL1_39
 
     runs-on: ubuntu-latest
