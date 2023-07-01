@@ -21,8 +21,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.3'
-          tools: composer:v1
+          php-version: '8.1'
+          tools: composer
 
       - uses: actions/setup-node@v3
         with:
