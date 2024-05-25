@@ -13,12 +13,7 @@ jobs:
     strategy:
       matrix:
         repository:
-          - AchievementBadges
-          - DiscordRCFeed
-          - FacetedCategory
           - FemiwikiSkin
-          - PageViewInfoGA
-          - Sanctions
           - UnifiedExtensionForFemiwiki
         branch:
           - main
