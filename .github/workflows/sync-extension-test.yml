@@ -13,16 +13,12 @@ jobs:
     strategy:
       matrix:
         repository:
-          - AchievementBadges
-          - DiscordRCFeed
-          - FacetedCategory
           - FemiwikiSkin
-          - PageViewInfoGA
-          - Sanctions
           - UnifiedExtensionForFemiwiki
         branch:
           - main
-          - REL1_39
+          - REL1_41
+          - REL1_42
 
     runs-on: ubuntu-latest
     steps:
