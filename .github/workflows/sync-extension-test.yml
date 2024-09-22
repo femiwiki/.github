@@ -18,6 +18,9 @@ jobs:
         branch:
           - main
           - REL1_42
+        exclude:
+          - repository: UnifiedExtensionForFemiwiki
+            branch: REL1_42
 
     runs-on: ubuntu-latest
     steps:
