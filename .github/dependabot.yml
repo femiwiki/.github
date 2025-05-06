@@ -8,18 +8,6 @@ updates:
       - 'femiwiki/reviewer'
 
   - package-ecosystem: 'github-actions'
-    directory: '/workflow-templates/.github/workflows'
-    schedule:
-      interval: monthly
-    reviewers:
-      - 'femiwiki/reviewer'
-    ignore:
-      - dependency-name: '*'
-        update-types:
-          - 'version-update:semver-minor'
-          - 'version-update:semver-patch'
-
-  - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: monthly
