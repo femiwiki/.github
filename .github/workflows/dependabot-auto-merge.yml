@@ -1,0 +1,34 @@
+name: Dependabot auto-merge
+
+on:
+  schedule:
+    - cron: '20 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: dependabot-auto-merge
+
+permissions: {}
+
+jobs:
+  auto-merge:
+    if: github.repository_owner == 'femiwiki'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: peter-murray/workflow-application-token-action@dad2b81e50ce3edeb5f3b7ffbd79f731368bd668 # v5.1.1
+        id: get_workflow_token
+        with:
+          application_id: ${{ vars.PAT_APPLICATION_ID }}
+          application_private_key: ${{ secrets.PAT_APPLICATION_PRIVATE_KEY }}
+      - env:
+          GH_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+          # infra applies a pull request with a `tofu apply` comment before it
+          # merges, and a person merges it afterwards.
+          SKIPPED_REPOSITORIES: femiwiki/infra
+        run: scripts/dependabot-auto-merge.sh
