@@ -1,0 +1,78 @@
+---
+name: Updatecli
+
+# Bumps the tool versions that workflows across the organization pin as an
+# action input, which no package manager reads. Dependabot has the rest.
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  updatecli:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      # Which workflows pin which tool changes rarely, and finding out reads
+      # every workflow in the organization, so the answer is kept a week.
+      - id: week
+        run: echo "number=$(( $(date +%s) / 604800 ))" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        id: targets
+        with:
+          path: values.json
+          key: updatecli-targets-${{ steps.week.outputs.number }}
+
+      # Reading every repository is the point of this token, so it covers the
+      # whole installation, read-only.
+      - if: steps.targets.outputs.cache-hit != 'true'
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: read
+        with:
+          app-id: ${{ vars.PAT_APPLICATION_ID }}
+          private-key: ${{ secrets.PAT_APPLICATION_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }} # zizmor: ignore[github-app]
+          permission-contents: read
+
+      - if: steps.targets.outputs.cache-hit != 'true'
+        env:
+          GH_TOKEN: ${{ steps.read.outputs.token }}
+        run: updatecli/discover.py > values.json
+
+      - id: repos
+        run: echo "list=$(jq -r '[.targets[].repo] | unique | join(",")' values.json)" >> "$GITHUB_OUTPUT"
+
+      # GITHUB_TOKEN reaches only this repository, and a pull request it
+      # opened would start no workflows. This one reaches only the
+      # repositories found above.
+      - if: steps.repos.outputs.list != ''
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: write
+        with:
+          app-id: ${{ vars.PAT_APPLICATION_ID }}
+          private-key: ${{ secrets.PAT_APPLICATION_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          repositories: ${{ steps.repos.outputs.list }}
+          permission-contents: write
+          permission-pull-requests: write
+          permission-workflows: write
+
+      - if: steps.repos.outputs.list != ''
+        uses: updatecli/updatecli-action@ca8c01bf875e2520512c344a71dd02f3dc3326a7 # v3.7.0
+        with:
+          version: v0.121.0
+
+      - if: steps.repos.outputs.list != ''
+        env:
+          UPDATECLI_GITHUB_TOKEN: ${{ steps.write.outputs.token }}
+        run: updatecli pipeline apply --config updatecli/bump.yaml --values values.json
