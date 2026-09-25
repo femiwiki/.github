@@ -1,7 +1,3 @@
 node_modules/
 # We use yarn instead of npm
 package-lock.json
-
-scripts/pf.py
-scripts/dependencies
-__pycache__
