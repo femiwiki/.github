@@ -1,3 +1,4 @@
 node_modules/
 # We use yarn instead of npm
 package-lock.json
+__pycache__/
