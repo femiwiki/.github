@@ -1,0 +1,9 @@
+[project]
+name = "femiwiki-dot-github"
+version = "0.0.0"
+requires-python = ">= 3.12"
+
+[dependency-groups]
+lint = [
+  "ruff==0.16.9",
+]
