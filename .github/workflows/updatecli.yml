@@ -30,7 +30,7 @@ jobs:
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         id: targets
         with:
-          path: targets.json
+          path: values.json
           key: updatecli-targets-${{ steps.week.outputs.number }}
 
       # Reading every repository is the point of this token, so it covers the
@@ -47,10 +47,10 @@ jobs:
       - if: steps.targets.outputs.cache-hit != 'true'
         env:
           GH_TOKEN: ${{ steps.read.outputs.token }}
-        run: updatecli/updatecli.py discover > targets.json
+        run: updatecli/discover.py > values.json
 
       - id: repos
-        run: echo "list=$(updatecli/updatecli.py repos targets.json)" >> "$GITHUB_OUTPUT"
+        run: echo "list=$(jq -r '[.targets[].repo] | unique | join(",")' values.json)" >> "$GITHUB_OUTPUT"
 
       # GITHUB_TOKEN reaches only this repository, and a pull request it
       # opened would start no workflows. This one reaches only the
@@ -68,9 +68,6 @@ jobs:
           permission-workflows: write
 
       - if: steps.repos.outputs.list != ''
-        run: updatecli/updatecli.py render targets.json "$RUNNER_TEMP/updatecli.d"
-
-      - if: steps.repos.outputs.list != ''
         uses: updatecli/updatecli-action@ca8c01bf875e2520512c344a71dd02f3dc3326a7 # v3.7.0
         with:
           version: v0.121.0
@@ -78,9 +75,4 @@ jobs:
       - if: steps.repos.outputs.list != ''
         env:
           UPDATECLI_GITHUB_TOKEN: ${{ steps.write.outputs.token }}
-        run: updatecli pipeline apply --config "$RUNNER_TEMP/updatecli.d"
-
-      - if: steps.repos.outputs.list != ''
-        env:
-          GH_TOKEN: ${{ steps.write.outputs.token }}
-        run: updatecli/updatecli.py release-notes targets.json
+        run: updatecli pipeline apply --config updatecli/bump.yaml --values values.json

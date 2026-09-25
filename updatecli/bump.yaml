@@ -1,0 +1,60 @@
+# One pipeline per tool and repository, so each repository gets one pull
+# request per tool, bumping the version: input in every workflow that pins it.
+# Rendered with the values discover.py prints.
+{{ range .targets }}
+{{- $name := .tool }}
+{{- $tool := index $.tools .tool }}
+---
+name: 'ci: bump {{ .tool }}'
+pipelineid: '{{ .tool }}'
+
+scms:
+  default:
+    kind: github
+    spec:
+      owner: '{{ $.owner }}'
+      repository: '{{ .repo }}'
+      branch: '{{ .branch }}'
+      user: femiwiki-pat-owner[bot]
+      email: 204444552+femiwiki-pat-owner[bot]@users.noreply.github.com
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      # updatecli adds the notes of the release it bumps to; this points at
+      # the ones it skips.
+      description: 'Earlier releases: https://github.com/{{ $tool.repository }}/releases'
+      labels:
+        - dependencies
+
+sources:
+  release:
+    name: 'Latest {{ .tool }} release'
+    kind: githubrelease
+    spec:
+      owner: '{{ index (splitList "/" $tool.repository) 0 }}'
+      repository: '{{ index (splitList "/" $tool.repository) 1 }}'
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+      versionfilter:
+        kind: regex/semver
+        pattern: '*'
+        regex: '^{{ regexQuoteMeta $tool.prefix }}(\d+\.\d+\.\d+)$'
+    transformers:
+      - trimprefix: '{{ $tool.prefix }}'
+
+targets:
+{{- range $i, $path := .paths }}
+  workflow{{ $i }}:
+    name: 'ci: bump {{ $name }} to {{ source "release" }}'
+    kind: file
+    scmid: default
+    sourceid: release
+    spec:
+      file: '{{ $path }}'
+      matchpattern: '{{ $tool.pattern }}'
+      replacepattern: '${1}{{ source "release" }}'
+{{- end }}
+{{ end }}
