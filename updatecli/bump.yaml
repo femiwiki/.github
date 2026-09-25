@@ -24,6 +24,7 @@ actions:
     kind: github/pullrequest
     scmid: default
     spec:
+      title: 'ci: bump {{ .tool }} to {{ source "release" }}'
       # updatecli adds the notes of the release it bumps to; this points at
       # the ones it skips.
       description: 'Earlier releases: https://github.com/{{ $tool.repository }}/releases'
