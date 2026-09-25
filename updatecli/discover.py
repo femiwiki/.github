@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Print the values bump.yaml renders from: the tools, and every workflow in
-the organization that pins one through its action's version: input.
+the organization that pins one.
 GitHub is reached through `gh`, which takes its token from GH_TOKEN."""
 
 import json
@@ -10,23 +10,41 @@ import subprocess
 import sys
 
 OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "femiwiki")
-# action: the step that installs the tool. repository: where its releases are,
-# tagged "<prefix><version>".
+
+
+def version_input(action: str) -> str:
+    """The action's step down to its version: input."""
+    return (
+        rf"(uses: {re.escape(action)}@[^\n]*\n[ \t]+with:\n"
+        r"(?:[ \t]+[a-z-]+:[^\n]*\n)*?[ \t]+version:[ \t]*)[^\s#]+"
+    )
+
+
+# uses: what shows a workflow installs the tool. pattern: the pinned version,
+# right after group 1; updatecli matches it with Go's regexp, which reads it the
+# same as Python's. repository: where the releases are, tagged
+# "<prefix><version>".
 TOOLS = {
     "biome": {
-        "action": "biomejs/setup-biome",
+        "uses": r"uses: biomejs/setup-biome@",
+        "pattern": version_input("biomejs/setup-biome"),
         "repository": "biomejs/biome",
         "prefix": "@biomejs/biome@",
     },
-    "rumdl": {"action": "rvben/rumdl", "repository": "rvben/rumdl", "prefix": "v"},
+    "rumdl": {
+        "uses": r"uses: rvben/rumdl@",
+        "pattern": version_input("rvben/rumdl"),
+        "repository": "rvben/rumdl",
+        "prefix": "v",
+    },
+    # Installed by shivammathur/setup-php's tools: input.
+    "parallel-lint": {
+        "uses": r"tools:[^\n]*\bparallel-lint\b",
+        "pattern": r"(tools:[^\n]*\bparallel-lint:)[^\s,]+",
+        "repository": "php-parallel-lint/PHP-Parallel-Lint",
+        "prefix": "v",
+    },
 }
-for tool in TOOLS.values():
-    # The step down to its version: input. updatecli matches it with Go's
-    # regexp, which reads it the same as Python's.
-    tool["pattern"] = (
-        rf"(uses: {re.escape(tool['action'])}@[^\n]*\n[ \t]+with:\n"
-        r"(?:[ \t]+[a-z-]+:[^\n]*\n)*?[ \t]+version:[ \t]*)[^\s#]+"
-    )
 
 
 def gh(*args: str) -> str:
@@ -70,9 +88,9 @@ for repo in json.loads(repos):
         for tool, spec in TOOLS.items():
             if re.search(spec["pattern"], raw):
                 paths[tool].append(f["path"])
-            elif f"uses: {spec['action']}@" in raw:
+            elif re.search(spec["uses"], raw):
                 print(
-                    f"::warning::{name}/{f['path']} uses {spec['action']} with no version: to bump",
+                    f"::warning::{name}/{f['path']} installs {tool} with no pinned version to bump",
                     file=sys.stderr,
                 )
     targets += [

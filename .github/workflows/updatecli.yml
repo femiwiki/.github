@@ -1,7 +1,7 @@
 ---
 name: Updatecli
 
-# Bumps the tool versions that workflows across the organization pin as an
+# Bumps the tool versions that workflows across the organization pin in an
 # action input, which no package manager reads. Dependabot has the rest.
 
 on:
@@ -23,7 +23,8 @@ jobs:
           persist-credentials: false
 
       # Which workflows pin which tool changes rarely, and finding out reads
-      # every workflow in the organization, so the answer is kept a week.
+      # every workflow in the organization, so the answer is kept a week, or
+      # until discover.py changes.
       - id: week
         run: echo "number=$(( $(date +%s) / 604800 ))" >> "$GITHUB_OUTPUT"
 
@@ -31,7 +32,7 @@ jobs:
         id: targets
         with:
           path: values.json
-          key: updatecli-targets-${{ steps.week.outputs.number }}
+          key: updatecli-targets-${{ steps.week.outputs.number }}-${{ hashFiles('updatecli/discover.py') }}
 
       # Reading every repository is the point of this token, so it covers the
       # whole installation, read-only.
