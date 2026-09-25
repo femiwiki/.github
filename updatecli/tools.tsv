@@ -1,3 +1,0 @@
-# tool	action	source kind	source	release repository	tag prefix
-biome	biomejs/setup-biome	npm	@biomejs/biome	biomejs/biome	@biomejs/biome@
-rumdl	rvben/rumdl	githubrelease	rvben/rumdl	rvben/rumdl	v
