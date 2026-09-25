@@ -1,7 +1,7 @@
 ---
 name: Updatecli
 
-# Bumps the tool versions that workflows across the organization pin as an
+# Bumps the tool versions that workflows across the organization pin in an
 # action input, which no package manager reads. Dependabot has the rest.
 
 on:
