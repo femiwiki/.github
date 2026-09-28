@@ -1,0 +1,70 @@
+---
+name: GitLab mirror
+
+# Keeps a copy of every unarchived repository's branches and tags on
+# gitlab.com. The projects and their deploy key are created by hand with glab.
+
+on:
+  schedule:
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: gitlab-mirror
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: gitlab
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Load the deploy key
+        env:
+          SSH_KEY: ${{ secrets.GITLAB_MIRROR_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo 'gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf' > ~/.ssh/known_hosts
+          eval "$(ssh-agent -s)"
+          ssh-add - <<< "$SSH_KEY"
+          echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK" >> "$GITHUB_ENV"
+
+      # GitLab paths cannot start with a dot, so .github goes to dot-github.
+      - name: Push to gitlab.com
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+        shell: bash
+        run: |
+          failed=()
+          for repo in $(gh repo list "$OWNER" --no-archived --limit 1000 --json name --jq '.[].name'); do
+            echo "::group::$repo"
+            path=${repo/#./dot-}
+            dir=$(mktemp -d)
+            git init --quiet --bare "$dir"
+            if git -C "$dir" fetch --quiet --prune "https://github.com/$OWNER/$repo.git" \
+              '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*' &&
+              git -C "$dir" push --prune "git@gitlab.com:femiwiki/$path.git" \
+                '+refs/heads/*:refs/heads/*' '+refs/tags/*:refs/tags/*' 2>"$dir/push.log"; then
+              cat "$dir/push.log" >&2
+            else
+              cat "$dir/push.log" >&2
+              failed+=("$repo")
+              if grep -q 'could not be found' "$dir/push.log"; then
+                sed -e "s|PATH|$path|g" -e "s|REPO|$repo|g" mirror/gitlab-missing.md >> "$GITHUB_STEP_SUMMARY"
+              fi
+            fi
+            rm -rf "$dir"
+            echo "::endgroup::"
+          done
+          if [ ${#failed[@]} -gt 0 ]; then
+            echo "::error::not mirrored: ${failed[*]}"
+            exit 1
+          fi
