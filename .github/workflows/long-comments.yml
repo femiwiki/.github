@@ -1,0 +1,57 @@
+name: Long comments
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  opengrep:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        id: cache
+        with:
+          path: ~/.cache/opengrep
+          key: opengrep-v1.30.0-35779bdd72e92129c8df2a77f0c55e8c08356801ea92591ef32108d6b28d564c
+
+      - if: steps.cache.outputs.cache-hit != 'true'
+        name: Install Opengrep
+        env:
+          VERSION: v1.30.0
+          SHA256: 35779bdd72e92129c8df2a77f0c55e8c08356801ea92591ef32108d6b28d564c
+        run: |
+          mkdir -p ~/.cache/opengrep
+          curl -fsSL -o ~/.cache/opengrep/opengrep \
+            "https://github.com/opengrep/opengrep/releases/download/$VERSION/opengrep_manylinux_x86"
+          echo "$SHA256  $HOME/.cache/opengrep/opengrep" | sha256sum -c -
+          chmod +x ~/.cache/opengrep/opengrep
+
+      - name: Write the rule
+        run: |
+          cat > "$RUNNER_TEMP/long-comments.yaml" <<'RULE'
+          rules:
+            - id: long-comment-block
+              languages: [regex]
+              pattern-regex: '(?m)(^[ \t]*(//|#)[^\n]*\n){3,}'
+              message: >-
+                Three or more comment lines in a row. Keep the comment to what a
+                reader of this line needs, and move the rest to the issue or pull
+                request.
+              severity: WARNING
+          RULE
+
+      # Only blocks the change adds fail; the ones already on the base stay
+      - env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          ~/.cache/opengrep/opengrep scan --config "$RUNNER_TEMP/long-comments.yaml" \
+            --baseline-commit "$BASE" --error .
