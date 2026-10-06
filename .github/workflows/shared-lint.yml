@@ -1,0 +1,56 @@
+name: Shared lint
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  zizmor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+          path: repo
+
+      # zizmor reads its config only from inside the workspace, so it sits next to the checkout
+      - name: Write the config
+        run: |
+          cat > zizmor.yml <<'CONFIG'
+          rules:
+            unpinned-uses:
+              config:
+                policies:
+                  '*': hash-pin
+            # actionlint rejects the `$/` syntax this asks for: https://github.com/rhysd/actionlint/issues/711
+            self-repository:
+              disable: true
+          CONFIG
+
+      - uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        with:
+          inputs: repo
+          config: zizmor.yml
+          advanced-security: false
+
+  extensions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: GitHub Actions files end in .yml, other YAML files in .yaml
+        run: |
+          wrong=$(
+            git ls-files '.github/*.yaml' 'action.yaml' '*/action.yaml'
+            git ls-files '*.yml' ':!.github/*' ':!action.yml' ':!*/action.yml' ':!FUNDING.yml'
+          )
+          if [ -n "$wrong" ]; then echo "$wrong"; exit 1; fi
