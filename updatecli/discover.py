@@ -33,6 +33,12 @@ TOOLS = {
         "repository": "biomejs/biome",
         "prefix": "@biomejs/biome@",
     },
+    "golangci-lint": {
+        "uses": r"uses: golangci/golangci-lint-action@",
+        "pattern": version_input("golangci/golangci-lint-action", "v"),
+        "repository": "golangci/golangci-lint",
+        "prefix": "v",
+    },
     "rumdl": {
         "uses": r"uses: rvben/rumdl@",
         "pattern": version_input("rvben/rumdl"),
