@@ -12,11 +12,13 @@ import sys
 OWNER = os.environ.get("GITHUB_REPOSITORY_OWNER", "femiwiki")
 
 
-def version_input(action: str) -> str:
-    """The action's step down to its version: input."""
+def version_input(action: str, lead: str = "") -> str:
+    """The action's step down to its version: input, and lead, which the pin
+    keeps in front of the version."""
     return (
         rf"(uses: {re.escape(action)}@[^\n]*\n[ \t]+with:\n"
-        r"(?:[ \t]+[a-z-]+:[^\n]*\n)*?[ \t]+version:[ \t]*)[^\s#]+"
+        r"(?:[ \t]+[a-z-]+:[^\n]*\n)*?[ \t]+version:[ \t]*"
+        rf"{re.escape(lead)})[^\s#]+"
     )
 
 
@@ -30,6 +32,12 @@ TOOLS = {
         "pattern": version_input("biomejs/setup-biome"),
         "repository": "biomejs/biome",
         "prefix": "@biomejs/biome@",
+    },
+    "golangci-lint": {
+        "uses": r"uses: golangci/golangci-lint-action@",
+        "pattern": version_input("golangci/golangci-lint-action", "v"),
+        "repository": "golangci/golangci-lint",
+        "prefix": "v",
     },
     "rumdl": {
         "uses": r"uses: rvben/rumdl@",
