@@ -28,9 +28,6 @@
 [docker]: https://docker.com/
 [github container registry]: https://github.com/orgs/femiwiki/packages?ecosystem=container
 [s3]: https://aws.amazon.com/s3
-[ses]: https://aws.amazon.com/ses
-[lambda]: https://aws.amazon.com/lambda
-[sqs]: https://aws.amazon.com/sqs
 
 페미위키는 [미디어위키] 엔진을 사용하고 있고 [Caddy]를 웹서버로 사용합니다.
 데이터베이스는 [MySQL], [Memcached]를 사용합니다.
@@ -76,5 +73,5 @@ The source code of _femiwiki/femiwiki_ is primarily distributed under the terms
 of the [GNU Affero General Public License v3.0] or any later version. See
 [COPYRIGHT] for details.
 
-[gnu affero general public license v3.0]: LICENSE
-[copyright]: COPYRIGHT
+[gnu affero general public license v3.0]: https://github.com/femiwiki/femiwiki/blob/main/LICENSE
+[copyright]: https://github.com/femiwiki/femiwiki/blob/main/COPYRIGHT

@@ -1,0 +1,3 @@
+[per-file-ignores]
+# Appended to a step summary, under its own heading
+"mirror/gitlab-missing.md" = ["MD041"]
