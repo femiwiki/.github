@@ -1,3 +1,5 @@
+# yamllint disable-file
+
 # One pipeline per tool and repository, so each repository gets one pull
 # request per tool, bumping the pin in every workflow that has one.
 # Rendered with the values discover.py prints.

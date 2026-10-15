@@ -45,6 +45,12 @@ TOOLS = {
         "repository": "rvben/rumdl",
         "prefix": "v",
     },
+    "yamllint": {
+        "uses": r"\byamllint==",
+        "pattern": r"(--spec yamllint==)[^\s]+",
+        "repository": "adrienverge/yamllint",
+        "prefix": "v",
+    },
     # Installed by shivammathur/setup-php's tools: input.
     "parallel-lint": {
         "uses": r"tools:[^\n]*\bparallel-lint\b",
