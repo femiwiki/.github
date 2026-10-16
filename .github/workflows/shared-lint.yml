@@ -76,6 +76,38 @@ jobs:
           version: 0.2.79
           args: --extend-disable MD013
 
+  yamllint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      # Used when the repository has no yamllint config of its own
+      - name: Write the default config
+        run: |
+          cat > "$RUNNER_TEMP/yamllint.yaml" <<'CONFIG'
+          extends: default
+          rules:
+            comments:
+              min-spaces-from-content: 1
+            document-start: disable
+            line-length: disable
+            truthy:
+              check-keys: false
+          CONFIG
+
+      - run: |
+          config=()
+          if [ ! -e .yamllint ] && [ ! -e .yamllint.yaml ] && [ ! -e .yamllint.yml ]; then
+            config=(-c "$RUNNER_TEMP/yamllint.yaml")
+          fi
+          git ls-files -z '*.yml' '*.yaml' |
+            xargs -0 -r pipx run --spec yamllint==1.38.0 yamllint --strict "${config[@]}"
+
   extensions:
     runs-on: ubuntu-latest
     timeout-minutes: 5
