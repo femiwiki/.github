@@ -11,37 +11,36 @@
 - [각종 소스코드](https://github.com/femiwiki/)
 - [페미위키 디스코드 #개발 채널](https://discord.gg/umzYjJcbvH)
 - [페미위키 개발팀 칸반 보드](https://github.com/orgs/femiwiki/projects/5)
-- [페미위키 개발팀 블로그](https://femiwiki.com/w/Project:%EA%B0%9C%EB%B0%9C_%EB%B8%94%EB%A1%9C%EA%B7%B8)
+- [페미위키 기술 블로그](https://femiwiki.com/w/%ED%8E%98%EB%AF%B8%EC%9C%84%ED%82%A4:%EC%9A%B4%EC%98%81%ED%8C%80/%EA%B0%9C%EB%B0%9C%ED%8C%80/%EA%B8%B0%EC%88%A0_%EB%B8%94%EB%A1%9C%EA%B7%B8)
 
 페미위키에 이슈나 버그, 원하시는 건의사항이 있으실 경우 언제든지 편하게 이슈를
 남겨주세요.
 
 ## 페미위키 기술 개요
 
-페미위키는 [AWS]를 사용하고 있으며, [Terraform]을 사용해 선언적으로 클라우드
-인프라를 관리하고 있습니다. 페미위키에선 [EC2]에 [Nomad]로 [Docker] 컨테이너를
-사용해 서비스들을 배포하고 있으며, [Github Container registry]에서 누구나
-페미위키 컨테이너 이미지를 다운받을 수 있습니다. 사이트의 일부 정적 리소스는
-[S3]에 저장됩니다. AWS SES, Lambda, SQS 등도 사용합니다.
+페미위키는 [AWS]를 사용하고 있으며, [OpenTofu]를 사용해 선언적으로 클라우드
+인프라를 관리하고 있습니다. 페미위키에선 [EC2]에 [Docker] 컨테이너로 서비스들을
+배포하고 있고, 이 컨테이너들도 OpenTofu로 관리합니다. [Github Container
+registry]에서 누구나 페미위키 컨테이너 이미지를 다운받을 수 있습니다. 사이트의
+일부 정적 리소스는 [S3]에 저장됩니다. AWS SES, Lambda, SQS 등도 사용합니다.
 
 [aws]: https://aws.amazon.com
-[terraform]: https://terraform.io
+[opentofu]: https://opentofu.org/
 [ec2]: https://aws.amazon.com/ec2
-[nomad]: https://www.nomadproject.io/
 [docker]: https://docker.com/
 [github container registry]: https://github.com/orgs/femiwiki/packages?ecosystem=container
 [s3]: https://aws.amazon.com/s3
 
 페미위키는 [미디어위키] 엔진을 사용하고 있고 [Caddy]를 웹서버로 사용합니다.
-데이터베이스는 [MySQL], [Memcached]를 사용합니다.
+데이터베이스는 [MariaDB], [Memcached]를 사용합니다.
 
 [미디어위키]: https://www.mediawiki.org
 [Caddy]: https://caddyserver.com
-[MySQL]: https://www.mysql.com
+[MariaDB]: https://mariadb.org
 [Memcached]: https://memcached.org/
 
 미디어위키는 [PHP]와 [Vue.js], [Less.js], [Lua] 등으로 이루어져 있으며
-페미위키는 [FemiwikiSkin], [Sanctions] 등 여러 미디어위키 확장기능을
+페미위키는 [FemiwikiSkin], [UnifiedExtensionForFemiwiki] 등 여러 미디어위키 확장기능을
 자체개발하여 사용하고 있습니다.
 
 [php]: https://www.php.net/
@@ -49,17 +48,16 @@
 [less.js]: https://lesscss.org/
 [lua]: https://www.lua.org/
 [femiwikiskin]: https://github.com/femiwiki/FemiwikiSkin
-[sanctions]: https://github.com/femiwiki/Sanctions
+[unifiedextensionforfemiwiki]: https://github.com/femiwiki/UnifiedExtensionForFemiwiki
 
 페미위키에서 주로 작업하는 소스코드들은 GitHub과 Wikimedia Gerrit에 존재하며
 아래 링크로 확인하실 수 있으십니다.
 
-- [페미위키 테라폼](https://github.com/femiwiki/infra)
-- [페미위키 Nomad](https://github.com/femiwiki/nomad)
+- [페미위키 인프라](https://github.com/femiwiki/infra)
 - [도커 이미지 목록](https://github.com/femiwiki?q=docker-image+archived%3Ano)
 - 미디어위키 확장기능
   - [FemiwikiSkin]
-  - [그 외 자체 개발 확장 기능들](https://github.com/femiwiki?q=mediawiki-extension+fork%3Ano)
+  - [그 외 자체 개발 확장 기능들](https://github.com/femiwiki?q=mediawiki-extension+fork%3Ano+archived%3Ano)
 
 ## 이용 허락
 
