@@ -57,6 +57,21 @@ jobs:
           --vcs-enabled=true --vcs-client-kind=git --vcs-use-ignore-file=true
           --files-ignore-unknown=true --no-errors-on-unmatched
 
+  prettier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      # Biome cannot read LESS, so Prettier checks it with the tabs Biome uses
+      - run: >-
+          git ls-files -z '*.less' |
+          xargs -0 -r npx --yes prettier@3.9.9 --check --use-tabs
+
   rumdl:
     runs-on: ubuntu-latest
     timeout-minutes: 5
