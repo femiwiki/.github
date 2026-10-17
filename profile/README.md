@@ -1,6 +1,8 @@
 # [페미위키](https://femiwiki.com)
 
-페미위키 깃헙에 오신 것을 환영합니다! 페미위키는 주류 위키들의 남성 중심적이고 여성 혐오적인 정보에 반대하여 약자, 소수자를 위해 만들어진 여성주의 정보 집합체입니다.
+페미위키 깃헙에 오신 것을 환영합니다! 페미위키는 주류 위키들의 남성 중심적이고
+여성 혐오적인 정보에 반대하여 약자, 소수자를 위해 만들어진 여성주의 정보
+집합체입니다.
 
 페미위키는 모든 소스코드를 오픈소스로 공개하고 있으며, 이슈트래커와 대화공간도
 공개하고 있어 페미위키 구성원이 아닌 사람도 페미위키 개발에 쉽게 참여하실 수
@@ -17,9 +19,10 @@
 ## 페미위키 기술 개요
 
 페미위키는 [AWS]를 사용하고 있으며, [Terraform]을 사용해 선언적으로 클라우드
-인프라를 관리하고 있습니다. 페미위키에선 [EC2]에 [Nomad]로 [Docker] 컨테이너를 사용해 서비스들을
-배포하고 있으며, [Github Container registry]에서 누구나 페미위키 컨테이너 이미지를 다운받을 수
-있습니다. 사이트의 일부 정적 리소스는 [S3]에 저장됩니다. AWS SES, Lambda, SQS 등도 사용합니다.
+인프라를 관리하고 있습니다. 페미위키에선 [EC2]에 [Nomad]로 [Docker] 컨테이너를
+사용해 서비스들을 배포하고 있으며, [Github Container registry]에서 누구나
+페미위키 컨테이너 이미지를 다운받을 수 있습니다. 사이트의 일부 정적 리소스는
+[S3]에 저장됩니다. AWS SES, Lambda, SQS 등도 사용합니다.
 
 [aws]: https://aws.amazon.com
 [terraform]: https://terraform.io
@@ -37,8 +40,9 @@
 [MySQL]: https://www.mysql.com
 [Memcached]: https://memcached.org/
 
-미디어위키는 [PHP]와 [Vue.js], [Less.js], [Lua] 등으로 이루어져 있으며 페미위키는 [FemiwikiSkin],
-[Sanctions] 등 여러 미디어위키 확장기능을 자체개발하여 사용하고 있습니다.
+미디어위키는 [PHP]와 [Vue.js], [Less.js], [Lua] 등으로 이루어져 있으며
+페미위키는 [FemiwikiSkin], [Sanctions] 등 여러 미디어위키 확장기능을
+자체개발하여 사용하고 있습니다.
 
 [php]: https://www.php.net/
 [vue.js]: https://vuejs.org/
@@ -47,7 +51,8 @@
 [femiwikiskin]: https://github.com/femiwiki/FemiwikiSkin
 [sanctions]: https://github.com/femiwiki/Sanctions
 
-페미위키에서 주로 작업하는 소스코드들은 GitHub과 Wikimedia Gerrit에 존재하며 아래 링크로 확인하실 수 있으십니다.
+페미위키에서 주로 작업하는 소스코드들은 GitHub과 Wikimedia Gerrit에 존재하며
+아래 링크로 확인하실 수 있으십니다.
 
 - [페미위키 테라폼](https://github.com/femiwiki/infra)
 - [페미위키 Nomad](https://github.com/femiwiki/nomad)
