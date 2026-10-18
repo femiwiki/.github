@@ -21,10 +21,15 @@ jobs:
     permissions:
       contents: read
 
+  long-comments-test:
+    uses: ./.github/workflows/long-comments-test.yml
+    permissions:
+      contents: read
+
   # The one check branch protection requires. What has to pass is the
   # workflows called above, so adding a check does not touch femiwiki/infra.
   required:
-    needs: [lint, shared-lint, long-comments]
+    needs: [lint, shared-lint, long-comments, long-comments-test]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

@@ -1,0 +1,6 @@
+#p-header #lastmod-and-views #p-views #ca-ve-edit:hover,
+#p-header #lastmod-and-views #p-views #ca-ve-edit:focus,
+#p-header #lastmod-and-views #p-views #ca-edit:hover,
+#p-header #lastmod-and-views #p-views #ca-edit:focus {
+	color: inherit;
+}
