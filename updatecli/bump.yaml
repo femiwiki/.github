@@ -61,3 +61,51 @@ targets:
       replacepattern: '${1}{{ source "release" }}'
 {{- end }}
 {{ end }}
+
+# One pipeline per repository that calls this repository's workflows, moving
+# every pin to head, which updatecli.yml passes.
+{{- if $.head }}
+{{ range .pins }}
+---
+name: 'ci: bump {{ $.owner }}/.github workflows'
+pipelineid: 'shared-workflows'
+
+scms:
+  default:
+    kind: github
+    spec:
+      owner: '{{ $.owner }}'
+      repository: '{{ .repo }}'
+      branch: '{{ .branch }}'
+      user: femiwiki-pat-owner[bot]
+      email: 204444552+femiwiki-pat-owner[bot]@users.noreply.github.com
+      token: '{{ requiredEnv "UPDATECLI_GITHUB_TOKEN" }}'
+
+actions:
+  default:
+    kind: github/pullrequest
+    scmid: default
+    spec:
+      title: 'ci: bump {{ $.owner }}/.github workflows to {{ substr 0 7 $.head }}'
+      description: |
+        Changes:
+        {{- range .shas }}
+        - https://github.com/{{ $.owner }}/.github/compare/{{ . }}...{{ $.head }}
+        {{- end }}
+      labels:
+        - dependencies
+
+targets:
+{{- range $i, $path := .paths }}
+  workflow{{ $i }}:
+    name: 'ci: bump {{ $.owner }}/.github workflows to {{ substr 0 7 $.head }}'
+    kind: file
+    scmid: default
+    disablesourceinput: true
+    spec:
+      file: '{{ $path }}'
+      matchpattern: '{{ $.shared.pattern }}'
+      replacepattern: '${1}{{ $.head }}'
+{{- end }}
+{{ end }}
+{{- end }}
