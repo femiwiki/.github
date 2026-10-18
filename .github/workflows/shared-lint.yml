@@ -88,7 +88,7 @@ jobs:
 
       - uses: rvben/rumdl@bb84a49a85625b31ecf6c3e58b7bca7c75fbfefb # v0.2.77
         with:
-          version: 0.2.79
+          version: 0.3.0
           # Long commands and keys in code blocks cannot wrap
           args: --config MD013.code-blocks=false
 
