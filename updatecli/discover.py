@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
-"""Print the values bump.yaml renders from: the tools, and every workflow in
-the organization that pins one.
+"""Print the values bump.yaml renders from: the tools, every workflow in the
+organization that pins one, and every workflow that pins a reusable workflow of
+this repository.
 GitHub is reached through `gh`, which takes its token from GH_TOKEN."""
 
 import json
@@ -61,6 +62,11 @@ TOOLS = {
 }
 
 
+# A call of one of this repository's reusable workflows, pinned to a commit; the
+# commit is group 2. A branch or tag ref is left alone.
+SHARED = rf"(uses: {OWNER}/\.github/\.github/workflows/[^@\s]+@)([0-9a-f]{{40}})\b"
+
+
 def gh(*args: str) -> str:
     return subprocess.run(
         ["gh", *args], check=True, capture_output=True, text=True
@@ -68,6 +74,7 @@ def gh(*args: str) -> str:
 
 
 targets = []
+pins = []
 repos = gh(
     "repo",
     "list",
@@ -90,6 +97,7 @@ for repo in json.loads(repos):
     except subprocess.CalledProcessError:
         continue  # no workflows
     paths = {tool: [] for tool in TOOLS}
+    pinned = {}
     for f in files:
         if not f["name"].endswith((".yml", ".yaml")):
             continue
@@ -99,6 +107,8 @@ for repo in json.loads(repos):
             "-H",
             "Accept: application/vnd.github.raw",
         )
+        if shas := {m[1] for m in re.findall(SHARED, raw)}:
+            pinned[f["path"]] = shas
         for tool, spec in TOOLS.items():
             if re.search(spec["pattern"], raw):
                 paths[tool].append(f["path"])
@@ -112,5 +122,24 @@ for repo in json.loads(repos):
         for t, p in paths.items()
         if p
     ]
+    if pinned:
+        pins.append(
+            {
+                "repo": name,
+                "branch": branch,
+                "paths": list(pinned),
+                "shas": sorted(set().union(*pinned.values())),
+            }
+        )
 
-json.dump({"owner": OWNER, "tools": TOOLS, "targets": targets}, sys.stdout, indent=2)
+json.dump(
+    {
+        "owner": OWNER,
+        "tools": TOOLS,
+        "targets": targets,
+        "shared": {"pattern": SHARED},
+        "pins": pins,
+    },
+    sys.stdout,
+    indent=2,
+)

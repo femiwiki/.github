@@ -1,15 +1,25 @@
 ---
 name: Updatecli
 
-# Bumps the tool versions that workflows across the organization pin in an
-# action input, which no package manager reads. Dependabot has the rest.
+# Bumps what workflows across the organization pin that Dependabot cannot: tool
+# versions in action inputs, and commits of this repository's workflows.
 
 on:
+  # A fix to a reusable workflow reaches the repositories that call it as soon
+  # as it lands.
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/**
   schedule:
     - cron: '0 0 * * 1'
   workflow_dispatch:
 
 permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}
 
 jobs:
   updatecli:
@@ -51,7 +61,7 @@ jobs:
         run: updatecli/discover.py > values.json
 
       - id: repos
-        run: echo "list=$(jq -r '[.targets[].repo] | unique | join(",")' values.json)" >> "$GITHUB_OUTPUT"
+        run: echo "list=$(jq -r '[.targets[].repo, .pins[].repo] | unique | join(",")' values.json)" >> "$GITHUB_OUTPUT"
 
       # GITHUB_TOKEN reaches only this repository, and a pull request it
       # opened would start no workflows. This one reaches only the
@@ -73,7 +83,18 @@ jobs:
         with:
           version: v0.121.0
 
+      # The last commit of main that changed a workflow, so other commits open no
+      # pull requests; a branch run by hand moves no pins.
+      - if: steps.repos.outputs.list != '' && github.ref == 'refs/heads/main'
+        id: head
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: echo "sha=$(gh api "repos/$GITHUB_REPOSITORY/commits?sha=$GITHUB_SHA&path=.github/workflows&per_page=1" --jq '.[0].sha')" >> "$GITHUB_OUTPUT"
+
       - if: steps.repos.outputs.list != ''
         env:
+          HEAD: ${{ steps.head.outputs.sha }}
           UPDATECLI_GITHUB_TOKEN: ${{ steps.write.outputs.token }}
-        run: updatecli pipeline apply --config updatecli/bump.yaml --values values.json
+        run: |
+          jq -n --arg head "$HEAD" '{head: $head}' > head.json
+          updatecli pipeline apply --config updatecli/bump.yaml --values values.json --values head.json
