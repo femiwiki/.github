@@ -53,7 +53,7 @@ jobs:
 
       # Biome's defaults, so a repository needs a .biome.json only for files of its own to skip
       - run: >-
-          biome ci
+          biome ci --error-on-warnings
           --vcs-enabled=true --vcs-client-kind=git --vcs-use-ignore-file=true
           --files-ignore-unknown=true --no-errors-on-unmatched
 
