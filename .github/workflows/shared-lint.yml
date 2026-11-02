@@ -51,6 +51,10 @@ jobs:
         with:
           version: 2.5.15
 
+      # rumdl and yamllint own these, which Biome checks by default from 2.6
+      - name: Skip Markdown and YAML
+        run: printf '%s\n' '*.md' '*.yml' '*.yaml' >> .git/info/exclude
+
       # Biome's defaults, so a repository needs a .biome.json only for files of its own to skip
       - run: >-
           biome ci --error-on-warnings
