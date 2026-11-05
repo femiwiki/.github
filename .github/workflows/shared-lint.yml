@@ -49,7 +49,7 @@ jobs:
 
       - uses: biomejs/setup-biome@4c91541eaada48f67d7dbd7833600ce162b68f51 # v2.7.1
         with:
-          version: 2.6.4
+          version: 2.6.5
 
       # rumdl and yamllint own these, which Biome checks by default from 2.6
       - name: Skip Markdown and YAML
