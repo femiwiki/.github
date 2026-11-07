@@ -1,0 +1,8 @@
+name: New
+on: [push, pull_request]
+permissions: {}
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'true'

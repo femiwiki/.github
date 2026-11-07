@@ -1,0 +1,8 @@
+name: Release
+on: push
+permissions: {}
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'true'

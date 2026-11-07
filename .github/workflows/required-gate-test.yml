@@ -1,0 +1,24 @@
+name: Required gate test
+
+on:
+  workflow_call:
+
+permissions: {}
+
+jobs:
+  fixtures:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Write the script the shared workflow writes
+        run: |
+          yq -r '.jobs.check.steps[] | select(.name == "Write the script") | .run' \
+            .github/workflows/required-gate.yml | bash
+
+      - run: node "$RUNNER_TEMP/required-gate.mts" tests/required-gate | diff - tests/required-gate/expected.txt
