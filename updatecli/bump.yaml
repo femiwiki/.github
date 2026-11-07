@@ -94,6 +94,13 @@ actions:
         {{- end }}
       labels:
         - dependencies
+      # Merged once the required checks pass. infra merges through its apply
+      # job, so its pull requests are left to a person.
+      {{- if ne .repo "infra" }}
+      automerge: true
+      mergemethod: squash
+      usetitleforautomerge: true
+      {{- end }}
 
 targets:
 {{- range $i, $path := .paths }}
