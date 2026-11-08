@@ -52,6 +52,19 @@ TOOLS = {
         "repository": "adrienverge/yamllint",
         "prefix": "v",
     },
+    # Installed with Composer from a composer.json the workflow writes.
+    "php_codesniffer": {
+        "uses": r'"squizlabs/php_codesniffer":',
+        "pattern": r'("squizlabs/php_codesniffer": ")[^"]+',
+        "repository": "PHPCSStandards/PHP_CodeSniffer",
+        "prefix": "",
+    },
+    "slevomat-coding-standard": {
+        "uses": r'"slevomat/coding-standard":',
+        "pattern": r'("slevomat/coding-standard": ")[^"]+',
+        "repository": "slevomat/coding-standard",
+        "prefix": "",
+    },
     # Installed by shivammathur/setup-php's tools: input.
     "parallel-lint": {
         "uses": r"tools:[^\n]*\bparallel-lint\b",

@@ -128,6 +128,83 @@ jobs:
           git ls-files -z '*.yml' '*.yaml' |
             xargs -0 -r pipx run --spec yamllint==1.38.0 yamllint --strict "${config[@]}"
 
+  php:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - if: hashFiles('**/*.php') != ''
+        uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240 # 2.37.2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      # Only metrics: style is left to each repository's own MediaWiki ruleset.
+      # Each limit is today's largest function across the organization.
+      - if: hashFiles('**/*.php') != ''
+        name: Write the ruleset
+        run: |
+          mkdir "$RUNNER_TEMP/phpcs"
+          cat > "$RUNNER_TEMP/phpcs/composer.json" <<'COMPOSER'
+          {
+            "require": {
+              "squizlabs/php_codesniffer": "4.0.4",
+              "slevomat/coding-standard": "8.31.3"
+            },
+            "config": {
+              "allow-plugins": {
+                "dealerdirect/phpcodesniffer-composer-installer": true
+              }
+            }
+          }
+          COMPOSER
+          cat > "$RUNNER_TEMP/phpcs/ruleset.xml" <<'RULESET'
+          <?xml version="1.0"?>
+          <ruleset name="femiwiki-metrics">
+            <arg name="extensions" value="php"/>
+            <!-- FediFeeds InboxHandler::execute() -->
+            <rule ref="Generic.Metrics.CyclomaticComplexity">
+              <properties>
+                <property name="complexity" value="31"/>
+                <property name="absoluteComplexity" value="31"/>
+              </properties>
+            </rule>
+            <!-- FemiwikiSkin Portlet::onSidebarBeforeOutput(), FediFeeds Notes::getSectionItems() -->
+            <rule ref="Generic.Metrics.NestingLevel">
+              <properties>
+                <property name="nestingLevel" value="4"/>
+                <property name="absoluteNestingLevel" value="4"/>
+              </properties>
+            </rule>
+            <!-- FediFeeds InboxHandler::execute() -->
+            <rule ref="SlevomatCodingStandard.Functions.FunctionLength">
+              <properties>
+                <property name="maxLinesLength" value="66"/>
+              </properties>
+            </rule>
+            <!-- FediFeeds Notes::getSectionItems(); this sniff fails at the threshold itself -->
+            <rule ref="SlevomatCodingStandard.Complexity.Cognitive">
+              <properties>
+                <property name="warningThreshold" value="38"/>
+                <property name="errorThreshold" value="38"/>
+              </properties>
+            </rule>
+          </ruleset>
+          RULESET
+
+      - if: hashFiles('**/*.php') != ''
+        run: composer install --working-dir="$RUNNER_TEMP/phpcs" --no-interaction --no-progress
+
+      - if: hashFiles('**/*.php') != ''
+        run: >-
+          git ls-files -z '*.php' |
+          xargs -0 -r "$RUNNER_TEMP/phpcs/vendor/bin/phpcs" --standard="$RUNNER_TEMP/phpcs/ruleset.xml"
+
   extensions:
     runs-on: ubuntu-latest
     timeout-minutes: 5
