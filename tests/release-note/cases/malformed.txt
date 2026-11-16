@@ -1,0 +1,8 @@
+feat: add a thing
+
+```wikitext
+(추가) * 관련 문서 카드 대신 "더 둘러보기" [https://github.com/femiwiki/docker-mediawiki/pull/1890]
+*(추가) * 관련 문서 카드 대신 "더 둘러보기"
+*문서에 차트
+===feat===
+```

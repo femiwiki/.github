@@ -1,0 +1,5 @@
+feat: add a thing
+
+```wikitext
+*(추가) show related articles as a list [https://github.com/femiwiki/FemiwikiSkin/pull/1248]
+```

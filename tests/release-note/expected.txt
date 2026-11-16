@@ -1,0 +1,7 @@
+english.txt: Write it in Korean: *(추가) show related articles as a list [https://github.com/femiwiki/FemiwikiSkin/pull/1248]
+hamnida.txt: End it in a noun, such as "…기능 추가" or "…문제 수정", not "…니다": *(성능 개선) 문서를 더 빨리 보여 줍니다.
+malformed.txt: Write it as "*(분류) ...", 분류 being one of 추가, 수정, 버그, 성능 개선, 보안 패치, 내부 변화: (추가) * 관련 문서 카드 대신 "더 둘러보기" [https://github.com/femiwiki/docker-mediawiki/pull/1890]
+malformed.txt: Put the change right after "*(분류) ", with no second "*": *(추가) * 관련 문서 카드 대신 "더 둘러보기"
+malformed.txt: Write it as "*(분류) ...", 분류 being one of 추가, 수정, 버그, 성능 개선, 보안 패치, 내부 변화: *문서에 차트
+malformed.txt: Write it as "*(분류) ...", 분류 being one of 추가, 수정, 버그, 성능 개선, 보안 패치, 내부 변화: ===feat===
+missing.txt: Add a ```wikitext block of "*(분류) ..." lines in Korean for 페미위키:업데이트, or an empty one if readers see no change.

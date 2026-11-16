@@ -1,0 +1,109 @@
+name: Release note
+
+# Call it on pull_request_target with the edited type, so adding the block to
+# the body runs it again
+
+on:
+  workflow_call:
+    inputs:
+      paths:
+        description: >-
+          Path prefixes, one a line. When given, only a pull request touching
+          one of them needs a block.
+        type: string
+        default: ''
+
+permissions: {}
+
+jobs:
+  check:
+    if: >-
+      startsWith(github.event_name, 'pull_request')
+      && github.event.pull_request.user.type != 'Bot'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: read
+    steps:
+      - name: Write the script
+        run: |
+          cat > "$RUNNER_TEMP/release-note.mts" <<'SCRIPT'
+          import { readdirSync, readFileSync } from 'node:fs';
+          import { join } from 'node:path';
+          import { fileURLToPath } from 'node:url';
+
+          // The categories of femiwiki/femiwiki coding-conventions.md
+          const CATEGORIES = [ '추가', '수정', '버그', '성능 개선', '보안 패치', '내부 변화' ];
+          const PREFIXED = new RegExp( `^\\*\\((${ CATEGORIES.join( '|' ) })\\) (.*)$` );
+          const HEADING = new RegExp( `^=== *(${ CATEGORIES.join( '|' ) }) *===$` );
+          const LINK = / *\[https?:\/\/[^\] ]+\]$/;
+
+          export function check( title: string, body: string ): string[] {
+          	const blocks = [ ...body.replace( /\r/g, '' ).matchAll( /^```wikitext[ \t]*\n([^]*?)^```[ \t]*$/gm ) ]
+          		.map( ( match ) => match[ 1 ] );
+          	if ( blocks.length === 0 ) {
+          		return /^(feat|fix|perf)(\([^)]*\))?!?: /.test( title ) ?
+          			[ 'Add a ```wikitext block of "*(분류) ..." lines in Korean for 페미위키:업데이트, or an empty one if readers see no change.' ] :
+          			[];
+          	}
+          	const problems: string[] = [];
+          	for ( const block of blocks ) {
+          		let heading = false;
+          		for ( const line of block.split( '\n' ) ) {
+          			if ( line.trim() === '' ) {
+          				continue;
+          			}
+          			if ( HEADING.test( line ) ) {
+          				heading = true;
+          				continue;
+          			}
+          			const prefixed = PREFIXED.exec( line );
+          			const text = ( prefixed ? prefixed[ 2 ] : heading && /^\*[^(]/.test( line ) ? line.slice( 1 ) : null )
+          				?.replace( LINK, '' ).trim();
+          			if ( text === undefined ) {
+          				problems.push( `Write it as "*(분류) ...", 분류 being one of ${ CATEGORIES.join( ', ' ) }: ${ line }` );
+          			} else if ( text === '' || text.startsWith( '*' ) ) {
+          				problems.push( `Put the change right after "*(분류) ", with no second "*": ${ line }` );
+          			} else if ( !/[가-힣]/.test( text ) ) {
+          				problems.push( `Write it in Korean: ${ line }` );
+          			} else if ( /니다\.?$/.test( text ) ) {
+          				problems.push( `End it in a noun, such as "…기능 추가" or "…문제 수정", not "…니다": ${ line }` );
+          			}
+          		}
+          	}
+          	return problems;
+          }
+
+          // For the tests: each file in the directory is a title line and then the body
+          if ( process.argv[ 1 ] === fileURLToPath( import.meta.url ) ) {
+          	const dir = process.argv[ 2 ];
+          	for ( const name of readdirSync( dir ).filter( ( file ) => file.endsWith( '.txt' ) ).sort() ) {
+          		const [ title, ...body ] = readFileSync( join( dir, name ), 'utf8' ).split( '\n' );
+          		for ( const problem of check( title, body.join( '\n' ) ) ) {
+          			console.log( `${ name }: ${ problem }` );
+          		}
+          	}
+          }
+          SCRIPT
+
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PATHS: ${{ inputs.paths }}
+        with:
+          script: |
+            const { check } = await import( `${ process.env.RUNNER_TEMP }/release-note.mts` );
+            const pr = context.payload.pull_request;
+            const paths = process.env.PATHS.split( '\n' ).map( ( path ) => path.trim() ).filter( Boolean );
+            if ( paths.length > 0 ) {
+              const files = await github.paginate( github.rest.pulls.listFiles, { ...context.repo, pull_number: pr.number } );
+              if ( !files.some( ( f ) => [ f.filename, f.previous_filename ].some( ( name ) => paths.some( ( path ) => name?.startsWith( path ) ) ) ) ) {
+                return;
+              }
+            }
+            const problems = check( pr.title, pr.body ?? '' );
+            for ( const problem of problems ) {
+              core.error( problem );
+            }
+            if ( problems.length > 0 ) {
+              core.setFailed( 'See femiwiki/femiwiki coding-conventions.md, 업데이트 노트: https://github.com/femiwiki/femiwiki/blob/main/coding-conventions.md#업데이트-노트' );
+            }

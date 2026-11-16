@@ -33,6 +33,11 @@ jobs:
     permissions:
       contents: read
 
+  release-note-test:
+    uses: ./.github/workflows/release-note-test.yml
+    permissions:
+      contents: read
+
   required-gate:
     uses: ./.github/workflows/required-gate.yml
     permissions:
@@ -46,7 +51,7 @@ jobs:
   # The one check branch protection requires. What has to pass is the
   # workflows called above, so adding a check does not touch femiwiki/infra.
   required:
-    needs: [lint, shared-lint, long-comments, long-comments-test, required-gate, required-gate-test]
+    needs: [lint, shared-lint, long-comments, long-comments-test, release-note-test, required-gate, required-gate-test]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5

@@ -1,0 +1,6 @@
+feat: add a thing
+
+```wikitext
+*(추가) 문서에 차트를 넣는 기능 [https://github.com/femiwiki/docker-mediawiki/pull/1733]
+*(수정) 메뉴가 버튼과 떨어져 열리던 문제 수정
+```
